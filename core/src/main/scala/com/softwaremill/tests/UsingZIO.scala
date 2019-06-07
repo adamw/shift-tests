@@ -22,7 +22,7 @@ object UsingZIO extends _root_.scala.App {
     })
   }
 
-  def run(name: String)(th: => IO[_, _]): Unit = {
+  def run(name: String)(th: IO[_, _]): Unit = {
     println(s"-- $name --")
     new DefaultRuntime {}.unsafeRun(th)
     println()
