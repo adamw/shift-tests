@@ -28,7 +28,11 @@ object UsingCatsEffect extends App {
 
   def run(name: String)(th: IO[_]): Unit = {
     println(s"-- $name --")
-    th.unsafeRunSync()
+    try {
+      th.unsafeRunSync()
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
     println()
   }
 
@@ -61,6 +65,10 @@ object UsingCatsEffect extends App {
     printThread *> a *> printThread
   }
 
+  run("async shift") {
+    a *> IO.shift(ec1) *> printThread
+  }
+
   run("async 2") {
     cs1.evalOn(ec1)(a *> printThread)
   }
@@ -72,6 +80,10 @@ object UsingCatsEffect extends App {
         cb(Left(new IllegalStateException()))
       }
     })
+  }
+
+  run("async error") {
+    ae.guarantee(printThread)
   }
 
   run("async shift error") {
