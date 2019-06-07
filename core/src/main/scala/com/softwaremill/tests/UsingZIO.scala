@@ -51,4 +51,17 @@ object UsingZIO extends _root_.scala.App {
   run("async 2") {
     (printThread *> a *> printThread).on(ec1)
   }
+
+  val ae = IO.effectAsync[Any, Throwable, Unit] { cb =>
+    ec3.submit(new Runnable {
+      override def run(): Unit = {
+        println(Thread.currentThread().getName + " (async)")
+        cb(IO.fail(new IllegalStateException()))
+      }
+    })
+  }
+
+  run("async shift error") {
+    ae.ensuring(printThread.either)
+  }
 }

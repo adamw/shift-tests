@@ -64,4 +64,17 @@ object UsingCatsEffect extends App {
   run("async 2") {
     cs1.evalOn(ec1)(a *> printThread)
   }
+
+  val ae = IO.async[Unit] { cb =>
+    ec3.submit(new Runnable {
+      override def run(): Unit = {
+        println(Thread.currentThread().getName + " (async)")
+        cb(Left(new IllegalStateException()))
+      }
+    })
+  }
+
+  run("async shift error") {
+    ae.guarantee(IO.shift(ec1)).guarantee(printThread)
+  }
 }
