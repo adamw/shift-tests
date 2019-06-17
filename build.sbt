@@ -14,7 +14,8 @@ lazy val core: Project = (project in file("core"))
     name := "core",
     libraryDependencies ++= Seq(
       "org.scalaz" %% "scalaz-zio" % "1.0-RC5",
-      "org.typelevel" %% "cats-effect" % "1.3.1"
+      "org.typelevel" %% "cats-effect" % "1.3.1",
+      "io.monix" %% "monix" % "3.0.0-RC3"
     )
   )
 
